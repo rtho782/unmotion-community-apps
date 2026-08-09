@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Containers>
+  <PluginURL>https://github.com/rtho782/unmotion/releases/download/0.3.0-RC1/unmotion-0.3.0-RC1.plg</PluginURL>
+  <PluginAuthor>Richard Skinner</PluginAuthor>
+  <Beta>True</Beta>
+  <Category>Tools:System</Category>
+  <Name>unMotion</Name>
+  <Overview>Migrate libvirt virtual machines between paired Unraid hosts with storage-aware preflight, transfer, cutover, and recovery handling.</Overview>
+  <Description>unMotion migrates libvirt virtual machines between paired Unraid hosts. It supports storage-aware cold moves and warm moves with a final powered-off cutover, while preserving migration safety checks and resumable ZFS receive state.</Description>
+  <Project>https://github.com/rtho782/unmotion</Project>
+  <Support>https://github.com/rtho782/unmotion/issues</Support>
+  <MinVer>7.0.0</MinVer>
+  <IconFA>exchange</IconFA>
+</Containers>
