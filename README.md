@@ -5,8 +5,8 @@ This repository contains the Community Applications plugin template for [unMotio
 - Author: Richard Skinner
 - Template: `unmotion.xml`
 - Current channel: stable `0.4.0` (`0.4.0-stable` in Unraid's Plugins tab for update ordering)
-- Plugin feed: [stable unmotion.plg](https://raw.githubusercontent.com/rtho782/unmotion/codex/plugin-stable/unmotion.plg)
-- CA installation manifest: pinned to the published feed commit in `unmotion.xml`, with the stable filename `unmotion.plg`. This avoids slash-containing branch names in the scanner's download URL. The manifest's embedded update URL still follows the stable feed. Advance the template pin after publishing and verifying each new stable release.
+- Plugin feed: [stable unmotion.plg](https://raw.githubusercontent.com/rtho782/unmotion/plugin-stable/unmotion.plg)
+- CA installation manifest: pinned to the verified feed commit in `unmotion.xml`, with the stable filename `unmotion.plg`. Its embedded update URL follows `plugin-stable`. Advance the template pin after publishing and verifying each new stable release. The initial branch rename changes only feed metadata, not the 0.4.0 package or version; historical GitHub release assets remain unchanged.
 - Support: [GitHub issues](https://github.com/rtho782/unmotion/issues)
 
 The repository is intentionally separate from the plugin source so Community Applications can consume its XML without encountering unrelated XML files. It has not yet been submitted to the Community Applications feed.

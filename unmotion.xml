@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Plugin>
-  <PluginURL>https://raw.githubusercontent.com/rtho782/unmotion/dd05e6989514983ea3b09d42e93bddfe1c172e1f/unmotion.plg</PluginURL>
+  <PluginURL>https://raw.githubusercontent.com/rtho782/unmotion/1afac5ac7f1d6d6a8d4dfa1e841c9a83001ab4d3/unmotion.plg</PluginURL>
   <PluginAuthor>Richard Skinner</PluginAuthor>
   <Category>Tools:System</Category>
   <Name>unMotion</Name>
