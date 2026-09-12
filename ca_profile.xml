@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CommunityApplications>
+  <Profile>Richard Skinner maintains unMotion: VM cloning, cold and warm migration, scheduled ZFS replication and guarded coordinated manual recovery for Unraid. Use the project documentation and GitHub issues for help. Keep verified backups.</Profile>
+  <WebPage>https://github.com/rtho782/unmotion</WebPage>
+</CommunityApplications>
