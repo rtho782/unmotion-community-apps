@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Plugin>
-  <PluginURL>https://raw.githubusercontent.com/rtho782/unmotion/1afac5ac7f1d6d6a8d4dfa1e841c9a83001ab4d3/unmotion.plg</PluginURL>
+  <PluginURL>https://raw.githubusercontent.com/rtho782/unmotion/f6af395451e24dfa7a04a1f26a8d3de9c31af352/unmotion.plg</PluginURL>
   <PluginAuthor>Richard Skinner</PluginAuthor>
   <Category>Tools:System</Category>
   <Name>unMotion</Name>
-  <Overview>Clone VMs locally, migrate between paired Unraid hosts, and maintain scheduled ZFS replicas with coordinated manual recovery. Cold Move and Warm Move support ZFS and sparse file transfers; Warm Move requires a powered-off final cutover. Replication requires dedicated ZFS storage. Recovery requires Guest Agent evidence and a reachable, fenced source. No live migration or automatic failover. Keep verified backups and install matching versions on both hosts.</Overview>
+  <Overview>Clone VMs locally, migrate between paired Unraid hosts, and maintain scheduled ZFS replicas with coordinated manual recovery. Cold Move and Warm Move support ZFS and sparse file transfers; independent Warm Moves can run concurrently, but still require a powered-off final cutover. Reviewable problem reports include logs and VM/host details. Replication requires dedicated ZFS storage. Recovery requires Guest Agent evidence and a reachable, fenced source. No live migration or automatic failover. Keep verified backups and install matching versions on both hosts.</Overview>
   <Project>https://github.com/rtho782/unmotion</Project>
   <Support>https://github.com/rtho782/unmotion/issues</Support>
   <MinVer>7.0.0</MinVer>
