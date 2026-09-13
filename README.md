@@ -15,7 +15,7 @@ Clone a VM on your server, move it to another Unraid host, or keep scheduled ZFS
 - **Local cloning:** independent disks, new VM identifiers and NIC MAC addresses, with optional Ubuntu identity and DHCP customization.
 - **Scheduled replication:** incremental ZFS recovery points with configurable frequency and retention, plus opportunistic TPM capture when the source VM shuts down.
 - **Coordinated manual recovery:** activate an eligible replica after confirming that the reachable source is stopped and prevented from restarting.
-- **Beta tools:** reviewable diagnostic reports and concurrent preparation of independent VMs. The tested beta2 candidate also supports parallel independent Warm Move cutovers between compatible peers, with cancellable waiting for operations needing exclusive access.
+- **Beta tools:** reviewable diagnostic reports, concurrent preparation and parallel independent Warm Move cutovers between compatible peers, with cancellable waiting for operations needing exclusive access.
 
 ## Install and set up
 
@@ -26,8 +26,7 @@ This guide includes beta functionality. Availability is currently:
 | Channel | Version | Installation |
 | --- | --- | --- |
 | Stable / Community Apps template | 0.4.0 | [Stable installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-stable/unmotion.plg) |
-| Published beta | 0.4.1-beta1 | [Beta installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg) |
-| Tested development candidate | 0.4.1-beta2 | Not yet published to the update feed |
+| Published beta | [0.4.1-beta2](https://github.com/rtho782/unmotion/releases/tag/0.4.1-beta2) | [Beta installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg) |
 
 1. Install through the **Apps** listing when available, or paste the chosen installer link into **Plugins → Install Plugin**.
 2. Open **Settings → unMotion** on each host. Check the destination image directory, optional zvol parent dataset and ISO directory. These describe where that host receives data; pool names do not have to match.
@@ -43,7 +42,9 @@ For **Cold Move**, shut down the source, choose **Cold migrate**, review destina
 
 For **Warm Move**, choose **Prepare** while the source runs or is stopped. Wait for **READY**; **Update** refreshes the copy without cutting over. Choose **Cut over** when ready: unMotion requests a graceful shutdown, transfers the final disk changes and TPM/UEFI state, then starts the destination. A prepared copy is not a standalone bootable backup.
 
-Independent preparations can run together on the published beta. Parallel cutover requires beta2 support on both peers. Cold moves, destination overwrite, copying attached ISOs and older-peer cutovers use exclusive access. Concurrent operations on the same VM or overlapping storage remain blocked.
+Independent preparations can run together on the published beta. Parallel cutover requires beta2 support on both peers. Cold moves, destination overwrite, copying attached ISOs and older-peer cutovers wait cancellably for exclusive access. Concurrent operations on the same VM or overlapping storage remain blocked. Update, Cut over and Remove are unavailable while a migration job owns that VM; use the job's available controls or resolve an attention-required result first. Media choices appear only when an ISO is attached.
+
+Preparation checks storage and pairing requirements; destination CPU/RAM startup availability is guidance until cutover, when it is checked again and enforced. Parallel transfers compete for storage, network and RAM resources; they do not bypass capacity checks.
 
 Choose the source policy before migration:
 
@@ -88,6 +89,8 @@ Explicitly arm recovery, then use the destination's **Recovery** controls. Armin
 Use **Plugins → Check for Updates → Update**, then refresh unMotion. Updates follow the installed stable or beta feed and preserve settings, pairing and job state. Betas require explicit opt-in. Keep the installed descriptor named **unmotion.plg** rather than creating another plugin entry.
 
 On the published beta, choose **Report a problem** on a migration or clone job, including a failed or stuck job. It collects recent logs, relevant VM/storage metadata and available specifications for both hosts. Review and edit the anonymised preview, optionally retain original paths, then download or copy it. Redaction is best-effort: check filenames, paths and logs before sharing publicly.
+
+For a failed preparation with verified evidence that storage copying never began, **Archive failed record** removes the entry from the active list while retaining its logs locally. Removing a preparation with copied or partial storage is a separate, confirmed cleanup operation.
 
 **Open GitHub issue draft** does not upload the report. Sign in to GitHub, attach the reviewed file or paste it, describe the problem and submit it yourself. Without a GitHub account, you can still save a report and share it with someone helping you. On stable, provide the job log, plugin/Unraid versions and storage layout when requesting help.
 
