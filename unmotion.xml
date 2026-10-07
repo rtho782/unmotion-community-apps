@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Plugin>
+  <PluginURL>https://raw.githubusercontent.com/rtho782/unmotion/plugin-stable/unmotion.plg</PluginURL>
+  <PluginAuthor>Richard Skinner</PluginAuthor>
+  <Category>Tools:System</Category>
+  <Name>unMotion</Name>
+  <Overview>Clone VMs locally, migrate between paired Unraid hosts, and maintain scheduled ZFS replicas with coordinated manual recovery. Cold Move and Warm Move support ZFS and sparse file transfers; independent Warm Moves can run concurrently, but still require a powered-off final cutover. Pairing uses restricted SSH operations and requires protocol 7 on both hosts. Recovery requires dedicated ZFS storage, Guest Agent evidence and a reachable, stopped source; native libvirt fencing rejects unauthorized starts before QEMU runs. Use unMotion controls to start recovery-managed VMs. Reviewable problem reports include logs and VM/host details. No live migration or automatic failover. Keep verified backups and follow the coordinated upgrade guide.</Overview>
+  <Project>https://github.com/rtho782/unmotion</Project>
+  <Support>https://github.com/rtho782/unmotion/issues</Support>
+  <MinVer>7.3.2</MinVer>
+  <License>GPL-3.0-only</License>
+  <ReadMe>https://github.com/rtho782/unmotion-community-apps/blob/main/README.md</ReadMe>
+  <IconFA>exchange</IconFA>
+</Plugin>
