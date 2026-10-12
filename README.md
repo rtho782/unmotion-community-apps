@@ -17,19 +17,22 @@ Clone a VM on your server, move it to another Unraid host, or keep scheduled ZFS
 - **Coordinated manual recovery:** activate an eligible replica after confirming that the reachable source is stopped and fenced. Native libvirt hooks reject unauthorized starts of recovery-managed VMs before QEMU starts.
 - **Concurrent transfers:** independent Warm Move preparations and cutovers between compatible peers, with cancellable waiting for operations needing exclusive access.
 - **Problem reports:** reviewable diagnostics containing selected job logs, VM/storage metadata and both hosts' available technical specifications.
+- **Responsive inventory:** basic VM information appears before slower storage and guest-agent details. Browser tabs and authenticated peer display requests share a private RAM cache; operational safety checks always use fresh observations.
 
 ## Install and set up
 
 Requires Unraid **7.3.2 or later**, VM Manager enabled, sufficient storage and destination RAM, and SSH connectivity between hosts. Install matching unMotion versions on both hosts. Local cloning needs only one host and no pairing.
 
-The application and GitHub release use version **0.4.4**. Unraid's Plugins tab shows **2026.10.12.01-0.4.4**, combining a fixed release identifier with the familiar version so updates sort correctly.
+The application and GitHub release use version **0.4.5**. Unraid's Plugins tab shows **2026.10.12.02-0.4.5**, combining a fixed release identifier with the familiar version so updates sort correctly.
 
 Current release availability:
 
 | Channel | Version | Installation |
 | --- | --- | --- |
-| Stable / Community Apps template | [0.4.4](https://github.com/rtho782/unmotion/releases/tag/0.4.4) | [Stable installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-stable/unmotion.plg) |
-| Beta feed | 0.4.4 stable graduation; no newer beta | [Graduation installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg) |
+| Stable / Community Apps template | [0.4.5](https://github.com/rtho782/unmotion/releases/tag/0.4.5) | [Stable installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-stable/unmotion.plg) |
+| Beta feed | 0.4.5 stable graduation; no newer beta | [Graduation installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg) |
+
+The VM list shows the latest available observation and its timestamp while refreshing in the background. Use **Refresh** to request another scan; existing rows stay visible. After a reboot, the first scan starts with basic information and fills in details. An unavailable VM Manager is reported as an error rather than an empty host. Cached display information never replaces the fresh safety checks performed before an action.
 
 1. Install through the **Apps** listing when available, or paste the chosen installer link into **Plugins → Install Plugin**.
 2. Open **Settings → unMotion** on each host. Check the destination image directory, optional zvol parent dataset and ISO directory. These describe where that host receives data; pool names do not have to match.
@@ -45,7 +48,7 @@ The installer downloads a versioned TXZ package from GitHub Releases and Unraid 
 
 ### Upgrading from an older version
 
-**0.4.4 uses protocol 7, unchanged from 0.4.2 and 0.4.3; these versions remain compatible.** When updating from either version, pause scheduled replication, finish active jobs and shut down recovery-managed VMs before installing. Existing prepared copies can remain. Check pairing/native-hook readiness afterwards, then resume scheduling and use unMotion to start managed VMs.
+**0.4.5 uses protocol 7, unchanged from 0.4.2–0.4.4; these versions remain compatible.** When updating, pause scheduled replication, finish active jobs and shut down recovery-managed VMs before installing. Existing prepared copies can remain. Check pairing/native-hook readiness afterwards, then resume scheduling and use unMotion to start managed VMs.
 
 **From 0.4.1 or earlier**, transfers to protocol-7 peers are blocked; there is no unrestricted SSH fallback. Plan a coordinated update:
 
@@ -113,7 +116,7 @@ Start recovery-managed VMs through unMotion, not the native VM page or `virsh`: 
 
 ## Updates and support
 
-Use **Plugins → Check for Updates → Update**, following the coordinated upgrade steps above, then refresh unMotion. Both feeds currently offer 0.4.4 stable; installing it selects future stable updates. Future betas require explicit opt-in. Keep the installed descriptor named **unmotion.plg** rather than creating another plugin entry. The application reports **0.4.4** and the Plugins tab reports **2026.10.12.01-0.4.4** for update ordering.
+Use **Plugins → Check for Updates → Update**, following the coordinated upgrade steps above, then refresh unMotion. Both feeds currently offer 0.4.5 stable; installing it selects future stable updates. Future betas require explicit opt-in. Keep the installed descriptor named **unmotion.plg** rather than creating another plugin entry. The application reports **0.4.5** and the Plugins tab reports **2026.10.12.02-0.4.5** for update ordering. Manual installation and Community Apps use the same persistent installer; the verified current package is retained locally for boot-time restoration.
 
 Choose **Report a problem** on a migration or clone job, including a failed or stuck job. It collects recent logs, relevant VM/storage metadata and available specifications for both hosts. Review and edit the anonymised preview, optionally retain original paths, then download or copy it. Redaction is best-effort: check filenames, paths and logs before sharing publicly.
 
