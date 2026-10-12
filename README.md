@@ -22,14 +22,14 @@ Clone a VM on your server, move it to another Unraid host, or keep scheduled ZFS
 
 Requires Unraid **7.3.2 or later**, VM Manager enabled, sufficient storage and destination RAM, and SSH connectivity between hosts. Install matching unMotion versions on both hosts. Local cloning needs only one host and no pairing.
 
-The application and GitHub release use version **0.4.3**. Unraid's Plugins tab shows **2026.10.04.01-0.4.3**, combining a fixed release identifier with the familiar version so updates sort correctly.
+The application and GitHub release use version **0.4.4**. Unraid's Plugins tab shows **2026.10.12.01-0.4.4**, combining a fixed release identifier with the familiar version so updates sort correctly.
 
 Current release availability:
 
 | Channel | Version | Installation |
 | --- | --- | --- |
-| Stable / Community Apps template | [0.4.3](https://github.com/rtho782/unmotion/releases/tag/0.4.3) | [Stable installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-stable/unmotion.plg) |
-| Beta feed | 0.4.3 stable graduation; no newer beta | [Graduation installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg) |
+| Stable / Community Apps template | [0.4.4](https://github.com/rtho782/unmotion/releases/tag/0.4.4) | [Stable installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-stable/unmotion.plg) |
+| Beta feed | 0.4.4 stable graduation; no newer beta | [Graduation installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg) |
 
 1. Install through the **Apps** listing when available, or paste the chosen installer link into **Plugins → Install Plugin**.
 2. Open **Settings → unMotion** on each host. Check the destination image directory, optional zvol parent dataset and ISO directory. These describe where that host receives data; pool names do not have to match.
@@ -39,11 +39,13 @@ Current release availability:
 
 Keep verified backups. Preflight checks prerequisites, not every possible guest or hardware dependency.
 
+Automatic discovery uses Avahi/mDNS on the local network. Enable discovery on both hosts and allow multicast traffic; if a host is not listed, enter its address to pair directly. unMotion publishes only public connection metadata for discovery; private keys and settings remain restricted.
+
 The installer downloads a versioned TXZ package from GitHub Releases and Unraid verifies its SHA-256 before installing it. The verified current package stays cached on the boot device for subsequent boots. After successful installation and registration, older recognized unMotion TXZ downloads are removed; settings, logs, VM storage and staged newer packages remain untouched. Initial installation and updates to uncached packages require access to GitHub.
 
 ### Upgrading from an older version
 
-**0.4.3 uses protocol 7, unchanged from 0.4.2; these versions remain compatible.** For a 0.4.2 update, pause scheduled replication, finish active jobs and shut down recovery-managed VMs before installing. Existing prepared copies can remain. Check pairing/native-hook readiness afterwards, then resume scheduling and use unMotion to start managed VMs.
+**0.4.4 uses protocol 7, unchanged from 0.4.2 and 0.4.3; these versions remain compatible.** When updating from either version, pause scheduled replication, finish active jobs and shut down recovery-managed VMs before installing. Existing prepared copies can remain. Check pairing/native-hook readiness afterwards, then resume scheduling and use unMotion to start managed VMs.
 
 **From 0.4.1 or earlier**, transfers to protocol-7 peers are blocked; there is no unrestricted SSH fallback. Plan a coordinated update:
 
@@ -111,7 +113,7 @@ Start recovery-managed VMs through unMotion, not the native VM page or `virsh`: 
 
 ## Updates and support
 
-Use **Plugins → Check for Updates → Update**, following the coordinated upgrade steps above, then refresh unMotion. Both feeds currently offer 0.4.2 stable; installing it selects future stable updates. Future betas require explicit opt-in. Keep the installed descriptor named **unmotion.plg** rather than creating another plugin entry. The application reports **0.4.2** and the Plugins tab reports **0.4.2-stable** for update ordering.
+Use **Plugins → Check for Updates → Update**, following the coordinated upgrade steps above, then refresh unMotion. Both feeds currently offer 0.4.4 stable; installing it selects future stable updates. Future betas require explicit opt-in. Keep the installed descriptor named **unmotion.plg** rather than creating another plugin entry. The application reports **0.4.4** and the Plugins tab reports **2026.10.12.01-0.4.4** for update ordering.
 
 Choose **Report a problem** on a migration or clone job, including a failed or stuck job. It collects recent logs, relevant VM/storage metadata and available specifications for both hosts. Review and edit the anonymised preview, optionally retain original paths, then download or copy it. Redaction is best-effort: check filenames, paths and logs before sharing publicly.
 
