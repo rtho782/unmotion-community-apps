@@ -23,14 +23,14 @@ Clone a VM on your server, move it to another Unraid host, or keep scheduled ZFS
 
 Requires Unraid **7.3.2 or later**, VM Manager enabled, sufficient storage and destination RAM, and SSH connectivity between hosts. Install matching unMotion versions on both hosts. Local cloning needs only one host and no pairing.
 
-The application and GitHub release use version **0.4.6**. Unraid's Plugins tab shows **2026.10.13.01-0.4.6**, combining a fixed release identifier with the familiar version so updates sort correctly.
+The application and GitHub release use version **0.4.7**. Unraid's Plugins tab shows **2026.10.13.02-0.4.7**, combining a fixed release identifier with the familiar version so updates sort correctly.
 
 Current release availability:
 
 | Channel | Version | Installation |
 | --- | --- | --- |
-| Stable / Community Apps template | [0.4.6](https://github.com/rtho782/unmotion/releases/tag/0.4.6) | [Stable installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-stable/unmotion.plg) |
-| Beta feed | 0.4.6 stable graduation; no newer beta | [Graduation installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg) |
+| Stable / Community Apps template | [0.4.7](https://github.com/rtho782/unmotion/releases/tag/0.4.7) | [Stable installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-stable/unmotion.plg) |
+| Beta feed | 0.4.7 stable graduation; no newer beta | [Graduation installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg) |
 
 Migration/cutover and clone dialogs open immediately while fresh checks run, with submission disabled until checks finish. Background refreshes preserve unchanged VM details, controls, focus and tooltips. Logs preserve your reading position when you scroll back and follow output while at the bottom. A pairing test shows progress until it completes.
 
@@ -38,11 +38,21 @@ The VM list shows the latest available observation and its timestamp while refre
 
 1. Install through the **Apps** listing when available, or paste the chosen installer link into **Plugins → Install Plugin**.
 2. Open **Settings → unMotion** on each host. Check the destination image directory, optional zvol parent dataset and ISO directory. These describe where that host receives data; pool names do not have to match.
-3. Pair the hosts using discovery or the other host's address, then test the connection. Pairing uses the Unraid **root** account, but plugin-managed SSH keys are restricted to authenticated unMotion operations, not a general root shell. Pair only hosts you fully trust: permitted storage and VM operations are still privileged.
+3. Obtain the other host's Ed25519 fingerprint as described below, pair using discovery or its address, then test the connection. Pairing uses the Unraid **root** account and keys restricted to authenticated unMotion operations. Pair only hosts you fully trust: permitted storage and VM operations are privileged.
 4. Open **unMotion**, select a destination and review the VM inventory. Check the proposed paths, capacity, resources and choices in preflight.
 5. Start with a disposable VM and verify its boot, networking and applications after migration.
 
 Keep verified backups. Preflight checks prerequisites, not every possible guest or hardware dependency.
+
+### Pairing hosts
+
+New pairing requires 0.4.7 or later on both hosts. Obtain the other host's Ed25519 SSH fingerprint from its console or an already trusted connection:
+
+```bash
+ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub -E sha256
+```
+
+Enter its `SHA256:…` value in **Peer Ed25519 fingerprint** with the peer address, SSH port and root password. unMotion compares the peer key before sending the password and exchanges the return host key through that verified connection. Obtain the fingerprint independently of this new connection; a network scan alone does not establish trust. Existing protocol-7 pairings remain usable and their pins are preserved. An upgrade does not independently authenticate an earlier pairing; if its original trust is uncertain, compare its stored pin with the peer's console. Upgrade both hosts to apply the source-side storage checks in both directions.
 
 Automatic discovery uses Avahi/mDNS on the local network. Enable discovery on both hosts and allow multicast traffic; if a host is not listed, enter its address to pair directly. unMotion publishes only public connection metadata for discovery; private keys and settings remain restricted.
 
@@ -50,7 +60,7 @@ The installer downloads a versioned TXZ package from GitHub Releases and Unraid 
 
 ### Upgrading from an older version
 
-**0.4.6 uses protocol 7, unchanged from 0.4.2–0.4.5; these versions remain compatible.** When updating, pause scheduled replication, finish active jobs and shut down recovery-managed VMs before installing. Existing prepared copies can remain. Check pairing/native-hook readiness afterwards, then resume scheduling and use unMotion to start managed VMs.
+**0.4.7 uses protocol 7, unchanged from 0.4.2–0.4.6; existing pairings remain compatible.** New pairing requires 0.4.7 or later on both hosts. When updating, pause scheduled replication, finish active jobs and shut down recovery-managed VMs before installing. Existing prepared copies can remain. Check pairing/native-hook readiness afterwards, then resume scheduling and use unMotion to start managed VMs.
 
 **From 0.4.1 or earlier**, transfers to protocol-7 peers are blocked; there is no unrestricted SSH fallback. Plan a coordinated update:
 
@@ -80,6 +90,8 @@ Choose the source policy before migration:
 - **Unregister and retain storage:** remove the source VM definition but keep its files.
 - **Retain and rename:** keep the definition and disks, disable autostart and append the destination to its name.
 - **Delete after validation:** remove the source VM and its owned storage after five minutes of continuous destination runtime.
+
+Child datasets or unrelated contents select sparse file transfers of the VM disks. Automatic ZFS source cleanup removes only exact objects and this migration's snapshot. Other snapshots, holds, child datasets or changed ownership block cleanup and retain the source for inspection. Choose a retain policy when backups or other contents must remain. An interruption during the final dataset check can leave it read-only or unmounted; inspect the job before manually changing that state. See the [pairing and storage safety guidance](https://github.com/rtho782/unmotion/blob/main/docs/SECURITY-047.md).
 
 If destination startup fails, fix the reported problem and start it manually, then use **Resolve migration**. unMotion verifies the result and completes the original source policy, including a requested rename, without repeating the transfer or overwriting your repaired configuration. Do not start a retained source while its destination copy is running.
 
@@ -118,7 +130,7 @@ Start recovery-managed VMs through unMotion, not the native VM page or `virsh`: 
 
 ## Updates and support
 
-Use **Plugins → Check for Updates → Update**, following the coordinated upgrade steps above, then refresh unMotion. Both feeds currently offer 0.4.6 stable; installing it selects future stable updates. Future betas require explicit opt-in. Keep the installed descriptor named **unmotion.plg** rather than creating another plugin entry. The application reports **0.4.6** and the Plugins tab reports **2026.10.13.01-0.4.6** for update ordering. Manual installation and Community Apps use the same persistent installer; the verified current package is retained locally for boot-time restoration.
+Use **Plugins → Check for Updates → Update**, following the coordinated upgrade steps above, then refresh unMotion. Both feeds currently offer 0.4.7 stable; installing it selects future stable updates. Future betas require explicit opt-in. Keep the installed descriptor named **unmotion.plg** rather than creating another plugin entry. The application reports **0.4.7** and the Plugins tab reports **2026.10.13.02-0.4.7** for update ordering. Manual installation and Community Apps use the same persistent installer; the verified current package is retained locally for boot-time restoration.
 
 Choose **Report a problem** on a migration or clone job, including a failed or stuck job. It collects recent logs, relevant VM/storage metadata and available specifications for both hosts. Review and edit the anonymised preview, optionally retain original paths, then download or copy it. Redaction is best-effort: check filenames, paths and logs before sharing publicly.
 
