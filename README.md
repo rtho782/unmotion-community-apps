@@ -23,14 +23,16 @@ Clone a VM on your server, move it to another Unraid host, or keep scheduled ZFS
 
 Requires Unraid **7.3.2 or later**, VM Manager enabled, sufficient storage and destination RAM, and SSH connectivity between hosts. Install matching unMotion versions on both hosts. Local cloning needs only one host and no pairing.
 
-The application and GitHub release use version **0.4.5**. Unraid's Plugins tab shows **2026.10.12.02-0.4.5**, combining a fixed release identifier with the familiar version so updates sort correctly.
+The application and GitHub release use version **0.4.6**. Unraid's Plugins tab shows **2026.10.13.01-0.4.6**, combining a fixed release identifier with the familiar version so updates sort correctly.
 
 Current release availability:
 
 | Channel | Version | Installation |
 | --- | --- | --- |
-| Stable / Community Apps template | [0.4.5](https://github.com/rtho782/unmotion/releases/tag/0.4.5) | [Stable installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-stable/unmotion.plg) |
-| Beta feed | 0.4.5 stable graduation; no newer beta | [Graduation installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg) |
+| Stable / Community Apps template | [0.4.6](https://github.com/rtho782/unmotion/releases/tag/0.4.6) | [Stable installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-stable/unmotion.plg) |
+| Beta feed | 0.4.6 stable graduation; no newer beta | [Graduation installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg) |
+
+Migration/cutover and clone dialogs open immediately while fresh checks run, with submission disabled until checks finish. Background refreshes preserve unchanged VM details, controls, focus and tooltips. Logs preserve your reading position when you scroll back and follow output while at the bottom. A pairing test shows progress until it completes.
 
 The VM list shows the latest available observation and its timestamp while refreshing in the background. Use **Refresh** to request another scan; existing rows stay visible. After a reboot, the first scan starts with basic information and fills in details. An unavailable VM Manager is reported as an error rather than an empty host. Cached display information never replaces the fresh safety checks performed before an action.
 
@@ -48,7 +50,7 @@ The installer downloads a versioned TXZ package from GitHub Releases and Unraid 
 
 ### Upgrading from an older version
 
-**0.4.5 uses protocol 7, unchanged from 0.4.2–0.4.4; these versions remain compatible.** When updating, pause scheduled replication, finish active jobs and shut down recovery-managed VMs before installing. Existing prepared copies can remain. Check pairing/native-hook readiness afterwards, then resume scheduling and use unMotion to start managed VMs.
+**0.4.6 uses protocol 7, unchanged from 0.4.2–0.4.5; these versions remain compatible.** When updating, pause scheduled replication, finish active jobs and shut down recovery-managed VMs before installing. Existing prepared copies can remain. Check pairing/native-hook readiness afterwards, then resume scheduling and use unMotion to start managed VMs.
 
 **From 0.4.1 or earlier**, transfers to protocol-7 peers are blocked; there is no unrestricted SSH fallback. Plan a coordinated update:
 
@@ -116,7 +118,7 @@ Start recovery-managed VMs through unMotion, not the native VM page or `virsh`: 
 
 ## Updates and support
 
-Use **Plugins → Check for Updates → Update**, following the coordinated upgrade steps above, then refresh unMotion. Both feeds currently offer 0.4.5 stable; installing it selects future stable updates. Future betas require explicit opt-in. Keep the installed descriptor named **unmotion.plg** rather than creating another plugin entry. The application reports **0.4.5** and the Plugins tab reports **2026.10.12.02-0.4.5** for update ordering. Manual installation and Community Apps use the same persistent installer; the verified current package is retained locally for boot-time restoration.
+Use **Plugins → Check for Updates → Update**, following the coordinated upgrade steps above, then refresh unMotion. Both feeds currently offer 0.4.6 stable; installing it selects future stable updates. Future betas require explicit opt-in. Keep the installed descriptor named **unmotion.plg** rather than creating another plugin entry. The application reports **0.4.6** and the Plugins tab reports **2026.10.13.01-0.4.6** for update ordering. Manual installation and Community Apps use the same persistent installer; the verified current package is retained locally for boot-time restoration.
 
 Choose **Report a problem** on a migration or clone job, including a failed or stuck job. It collects recent logs, relevant VM/storage metadata and available specifications for both hosts. Review and edit the anonymised preview, optionally retain original paths, then download or copy it. Redaction is best-effort: check filenames, paths and logs before sharing publicly.
 
