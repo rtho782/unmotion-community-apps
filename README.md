@@ -23,14 +23,14 @@ Clone a VM on your server, move it to another Unraid host, or keep scheduled ZFS
 
 Requires Unraid **7.3.2 or later**, VM Manager enabled, sufficient storage and destination RAM, and SSH connectivity between hosts. Install matching unMotion versions on both hosts. Local cloning needs only one host and no pairing.
 
-The application and GitHub release use version **0.4.8**. Unraid's Plugins tab shows **2026.10.14.01-0.4.8**, combining a fixed release identifier with the familiar version so updates sort correctly.
+The application and GitHub release use version **0.4.9**. Unraid's Plugins tab shows **2026.10.15.01-0.4.9**, combining a fixed release identifier with the familiar version so updates sort correctly.
 
 Current release availability:
 
 | Channel | Version | Installation |
 | --- | --- | --- |
-| Stable / Community Apps template | [0.4.8](https://github.com/rtho782/unmotion/releases/tag/0.4.8) | [Stable installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-stable/unmotion.plg) |
-| Beta feed | 0.4.8 stable graduation; no newer beta | [Graduation installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg) |
+| Stable / Community Apps template | [0.4.9](https://github.com/rtho782/unmotion/releases/tag/0.4.9) | [Stable installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-stable/unmotion.plg) |
+| Beta feed | 0.4.9 stable graduation; no newer beta | [Graduation installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg) |
 
 Migration/cutover and clone dialogs open immediately while fresh checks run, with submission disabled until checks finish. Background refreshes preserve unchanged VM details, controls, focus and tooltips. Logs preserve your reading position when you scroll back and follow output while at the bottom. A pairing test shows progress until it completes.
 
@@ -46,7 +46,7 @@ Keep verified backups. Preflight checks prerequisites, not every possible guest 
 
 ### Pairing hosts
 
-Enter the other host's address, SSH port and root password, then choose **Pair**. The **Trust this host?** dialog displays the peer's Ed25519 fingerprint. Choose **Accept and pair** to trust that key and establish reciprocal pairing, or **Cancel** to return without pairing. New pairing requires 0.4.7 or later on both hosts; the initiating host needs 0.4.8 for this dialog.
+Enter the other host's address, SSH port and root password, then choose **Pair**. The **Trust this host?** dialog displays the peer's Ed25519 fingerprint. Choose **Accept and pair** to trust that key and establish reciprocal pairing, or **Cancel** to return without pairing. New pairing requires 0.4.7 or later on both hosts; the initiating host needs 0.4.8 or later for this dialog.
 
 Acceptance uses trust on first use, like an SSH client's first-connection prompt. For an independent check, expand **Verify manually (optional)** and compare the displayed fingerprint with this command on the peer's console or through a connection you already trust:
 
@@ -62,7 +62,7 @@ The installer downloads a versioned TXZ package from GitHub Releases and Unraid 
 
 ### Upgrading from an older version
 
-**0.4.8 uses protocol 7, unchanged from 0.4.2–0.4.7; existing pairings remain compatible.** New pairing requires 0.4.7 or later on both hosts. When updating, pause scheduled replication, finish active jobs and shut down recovery-managed VMs before installing. Existing prepared copies can remain. Check pairing/native-hook readiness afterwards, then resume scheduling and use unMotion to start managed VMs.
+**0.4.9 uses protocol 7, unchanged from 0.4.2–0.4.8; existing pairings remain compatible.** New pairing requires 0.4.7 or later on both hosts. VMs using the supported OVMF firmware setting below need 0.4.9 or later on both hosts. When updating, pause scheduled replication, finish active jobs and shut down recovery-managed VMs before installing. Existing prepared copies can remain. Check pairing/native-hook readiness afterwards, then resume scheduling and use unMotion to start managed VMs.
 
 **From 0.4.1 or earlier**, transfers to protocol-7 peers are blocked; there is no unrestricted SSH fallback. Plan a coordinated update:
 
@@ -75,7 +75,9 @@ The installer downloads a versioned TXZ package from GitHub Releases and Unraid 
 
 Updates preserve settings, pairing identities and recovery records. Old receive state without provable peer ownership is retained, not silently adopted or deleted. Resolve a reported compatibility or ownership problem before continuing; do not remove SSH key restrictions or enable native VM autostart to bypass it.
 
-Restricted transport rejects arbitrary host paths and custom QEMU command-line extensions. Libvirt NVRAM files must use UUID-scoped names, or a supported layout beside the VM disk. If preflight reports an older unsupported NVRAM path, shut down the VM before correcting its file location and XML.
+Restricted transport rejects arbitrary host paths and custom QEMU command-line extensions except for the validated firmware setting below. Libvirt NVRAM files must use UUID-scoped names, or a supported layout beside the VM disk. If preflight reports an older unsupported NVRAM path, shut down the VM before correcting its file location and XML.
+
+VMs using `-fw_cfg opt/ovmf/X-PciMmio64Mb,string=<number>` retain their OVMF PCI address-space setting during transfer. Both hosts require 0.4.9 or later; unsupported destinations are rejected before copying. Only this bounded decimal setting is permitted, not arbitrary QEMU options, extra arguments or file-backed firmware data. It does not allocate additional VM RAM or enable PCI/GPU passthrough migration. See [accepted XML syntax and limits](https://github.com/rtho782/unmotion/blob/main/docs/OVMF-FIRMWARE.md).
 
 ## Moving a VM
 
@@ -132,7 +134,7 @@ Start recovery-managed VMs through unMotion, not the native VM page or `virsh`: 
 
 ## Updates and support
 
-Use **Plugins → Check for Updates → Update**, following the coordinated upgrade steps above, then refresh unMotion. Both feeds currently offer 0.4.8 stable; installing it selects future stable updates. Future betas require explicit opt-in. Keep the installed descriptor named **unmotion.plg** rather than creating another plugin entry. The application reports **0.4.8** and the Plugins tab reports **2026.10.14.01-0.4.8** for update ordering. Manual installation and Community Apps use the same persistent installer; the verified current package is retained locally for boot-time restoration.
+Use **Plugins → Check for Updates → Update**, following the coordinated upgrade steps above, then refresh unMotion. Both feeds currently offer 0.4.9 stable; installing it selects future stable updates. Future betas require explicit opt-in. Keep the installed descriptor named **unmotion.plg** rather than creating another plugin entry. The application reports **0.4.9** and the Plugins tab reports **2026.10.15.01-0.4.9** for update ordering. Manual installation and Community Apps use the same persistent installer; the verified current package is retained locally for boot-time restoration.
 
 Choose **Report a problem** on a migration or clone job, including a failed or stuck job. It collects recent logs, relevant VM/storage metadata and available specifications for both hosts. Review and edit the anonymised preview, optionally retain original paths, then download or copy it. Redaction is best-effort: check filenames, paths and logs before sharing publicly.
 
