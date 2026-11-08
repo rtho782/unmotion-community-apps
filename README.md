@@ -8,6 +8,8 @@ Clone a VM on your server, move it to another Unraid host, or keep scheduled ZFS
 
 ## Features
 
+**Beta only — [0.5.0-beta2](https://github.com/rtho782/unmotion/releases/tag/0.5.0-beta2):** **Settings → unMotion** provides CPU compatibility comparison using persistent local observations and paired hosts' cached masks. It suggests an exact mode shared by every selected host, with one preferred revision per family and **Show all revisions** for older definitions. Q35/i440fx references are checked automatically. A reviewed bulk action backs up and applies the selected mode to eligible local persistent VM XMLs, preserving topology, pinning and non-CPU settings. It takes effect at the next full stop/start, not a guest reboot. This prepares for future live migration without powering off, apart from a brief handover stun; **live migration itself is not implemented**. Cold/Warm Move remain powered-off handovers without needing a shared CPU mode, including Intel/AMD where the VM and guest settings are compatible. Older modes may reduce performance or omit guest-required instructions, but can suit essential, lightly loaded VMs. These controls are not in stable 0.4.9. See the [CPU compatibility guide](https://github.com/rtho782/unmotion/blob/main/docs/CPU-COMPATIBILITY.md).
+
 - **Cold Move:** transfer a powered-off VM to a paired host and start it there.
 - **Warm Move:** prepare a copy while the VM runs, update it, then transfer the final changes at cutover.
 - **Flexible storage:** native ZFS transfers for zvols and dedicated VM datasets, with sparse file transfers for supported raw/qcow2 images, including images in shared datasets. Interrupted ZFS transfers can resume where supported.
@@ -23,14 +25,14 @@ Clone a VM on your server, move it to another Unraid host, or keep scheduled ZFS
 
 Requires Unraid **7.3.2 or later**, VM Manager enabled, sufficient storage and destination RAM, and SSH connectivity between hosts. Install matching unMotion versions on both hosts. Local cloning needs only one host and no pairing.
 
-The application and GitHub release use version **0.4.9**. Unraid's Plugins tab shows **2026.10.15.01-0.4.9**, combining a fixed release identifier with the familiar version so updates sort correctly.
+Stable uses application version **0.4.9** and Plugins version **2026.10.15.01-0.4.9**. Beta uses **0.5.0-beta2** and **2026.11.08.02-0.5.0-beta2** respectively. The fixed release identifier lets updates sort correctly without losing the familiar application version.
 
 Current release availability:
 
 | Channel | Version | Installation |
 | --- | --- | --- |
 | Stable / Community Apps template | [0.4.9](https://github.com/rtho782/unmotion/releases/tag/0.4.9) | [Stable installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-stable/unmotion.plg) |
-| Beta feed | 0.4.9 stable graduation; no newer beta | [Graduation installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg) |
+| Beta feed — opt-in | [0.5.0-beta2](https://github.com/rtho782/unmotion/releases/tag/0.5.0-beta2) | [Beta installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg) |
 
 Migration/cutover and clone dialogs open immediately while fresh checks run, with submission disabled until checks finish. Background refreshes preserve unchanged VM details, controls, focus and tooltips. Logs preserve your reading position when you scroll back and follow output while at the bottom. A pairing test shows progress until it completes.
 
@@ -134,7 +136,7 @@ Start recovery-managed VMs through unMotion, not the native VM page or `virsh`: 
 
 ## Updates and support
 
-Use **Plugins → Check for Updates → Update**, following the coordinated upgrade steps above, then refresh unMotion. Both feeds currently offer 0.4.9 stable; installing it selects future stable updates. Future betas require explicit opt-in. Keep the installed descriptor named **unmotion.plg** rather than creating another plugin entry. The application reports **0.4.9** and the Plugins tab reports **2026.10.15.01-0.4.9** for update ordering. Manual installation and Community Apps use the same persistent installer; the verified current package is retained locally for boot-time restoration.
+Use **Plugins → Check for Updates → Update**, following the coordinated upgrade steps above, then refresh unMotion. Community Apps and the stable feed offer 0.4.9; the beta feed offers 0.5.0-beta2. To opt into beta updates, paste `https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg` into **Plugins → Install Plugin**. Update both hosts for cached CPU comparison. Older protocol-7 peers retain existing workflows but cannot provide the optional CPU report. Stable installations are not switched automatically. Keep the installed descriptor named **unmotion.plg** rather than creating another plugin entry. Manual installation and Community Apps use the same persistent installer; the verified current package is retained locally for boot-time restoration.
 
 Choose **Report a problem** on a migration or clone job, including a failed or stuck job. It collects recent logs, relevant VM/storage metadata and available specifications for both hosts. Review and edit the anonymised preview, optionally retain original paths, then download or copy it. Redaction is best-effort: check filenames, paths and logs before sharing publicly.
 
