@@ -6,15 +6,15 @@ Clone a VM on your server, move it to another Unraid host, or keep scheduled ZFS
 
 [Plugin source](https://github.com/rtho782/unmotion) · [Releases](https://github.com/rtho782/unmotion/releases) · [Help and bug reports](https://github.com/rtho782/unmotion/issues)
 
-**Experimental beta:** [0.5.0-beta5](https://github.com/rtho782/unmotion/releases/tag/0.5.0-beta5) provides narrowly scoped live migration, nested-aware CPU configuration and a default CPU mode for new VMs. Stable and Community Apps remain on 0.4.9. Test disposable guests first; live migration remains experimental, with the requirements below.
+**Experimental beta:** [0.5.0-beta6](https://github.com/rtho782/unmotion/releases/tag/0.5.0-beta6) provides narrowly scoped live migration, nested-aware CPU configuration and a default CPU mode for new VMs, and explicit replication retirement/recreation. Stable and Community Apps remain on 0.4.9. Test disposable guests first; live migration remains experimental, with the requirements below.
 
 ## Features
 
 **Beta CPU defaults:** select a validated mode in **Settings → unMotion**, then choose **Use for new VMs**. The native VM form offers **unMotion default** and keeps existing custom CPU profiles unchanged. Saved form templates retain their own fixed profiles. **Clear default** restores Unraid's ordinary new-VM selection without changing existing VMs. Integration supports reviewed editor sources, qualified on Unraid 7.3.2 and 7.3.4; an unknown or externally changed editor is not overwritten. Check integration status after an Unraid update.
 
-In Beta5, online Warm Move preparation and Update tolerate growing file images while checking the received transfer length. Prepared copies remain provisional. Cutover still shuts down the source and forces the final image delta, even when file size/timestamps match, before starting the destination.
+In the beta, online Warm Move preparation and Update tolerate growing file images while checking the received transfer length. Prepared copies remain provisional. Cutover still shuts down the source and forces the final image delta, even when file size/timestamps match, before starting the destination.
 
-**Beta only — [0.5.0-beta5](https://github.com/rtho782/unmotion/releases/tag/0.5.0-beta5):** live migration moves an eligible running guest without a shutdown/reboot, with a handover pause. Both hosts need matching Beta5 and qualified QEMU/libvirt versions. The scope is BIOS or supported UEFI without TPM, one independent raw/qcow2 file on a direct pool path and ordinary bridge NICs; TPM, passthrough, ISOs, zvols/multiple disks and recovery/replication-managed guests are excluded. UEFI requires matching reviewed OVMF firmware and UUID-scoped raw variables files. See [live-migration instructions and limits](https://github.com/rtho782/unmotion/blob/main/docs/LIVE-MIGRATION-BETA.md).
+**Beta only — [0.5.0-beta6](https://github.com/rtho782/unmotion/releases/tag/0.5.0-beta6):** live migration moves an eligible running guest without a shutdown/reboot, with a handover pause. Both hosts need matching Beta6 and qualified QEMU/libvirt versions. The scope is BIOS or supported UEFI without TPM, one independent raw/qcow2 file on a direct pool path and ordinary bridge NICs; TPM, passthrough, ISOs, zvols/multiple disks and recovery/replication-managed guests are excluded. UEFI requires matching reviewed OVMF firmware and UUID-scoped raw variables files. See [live-migration instructions and limits](https://github.com/rtho782/unmotion/blob/main/docs/LIVE-MIGRATION-BETA.md).
 
 **Beta CPU compatibility:** **Settings → unMotion** compares persistent local observations with paired hosts' cached masks and suggests an exact shared mode. One preferred revision per family is shown, with **Show all revisions** for older definitions; Q35/i440fx reference checks are automatic. A reviewed bulk action backs up and applies the selected mode to eligible persistent VM XMLs, preserving topology, pinning and other settings. It takes effect at the next full stop/start, not a guest reboot. Live migration also performs fresh VM-specific checks; a cached match alone is not permission. Cold/Warm Move do not require a shared CPU mode, including Intel/AMD where guest/VM settings are compatible. Older modes may reduce performance or omit required instructions, but can suit lightly loaded essential VMs. These controls are not in stable 0.4.9. See [CPU compatibility](https://github.com/rtho782/unmotion/blob/main/docs/CPU-COMPATIBILITY.md).
 
@@ -35,14 +35,16 @@ CPU application preserves existing VMX/SVM exposure, including implicit host-pas
 
 Requires Unraid **7.3.2 or later**, VM Manager enabled, sufficient storage and destination RAM, and SSH connectivity between hosts. Install matching unMotion versions on both hosts. Local cloning needs only one host and no pairing.
 
-Stable uses application version **0.4.9** and Plugins version **2026.10.15.01-0.4.9**. Beta uses **0.5.0-beta5** and **2026.11.09.02-0.5.0-beta5** respectively. The fixed release identifier lets updates sort correctly without losing the familiar application version.
+Stable uses application version **0.4.9** and Plugins version **2026.10.15.01-0.4.9**. Beta uses **0.5.0-beta6** and **2026.11.09.03-0.5.0-beta6** respectively. The fixed release identifier lets updates sort correctly without losing the familiar application version.
 
 Current release availability:
+
+**Beta replication controls:** end a schedule while keeping read-only replicas or deleting their exact owned data, then configure a separate new cycle for the same VM/destination. See [ending replication](#ending-replication-beta) below. Both hosts need the applicable Beta6 capabilities; stable does not include these controls.
 
 | Channel | Version | Installation |
 | --- | --- | --- |
 | Stable / Community Apps template | [0.4.9](https://github.com/rtho782/unmotion/releases/tag/0.4.9) | [Stable installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-stable/unmotion.plg) |
-| Beta feed — opt-in | [0.5.0-beta5](https://github.com/rtho782/unmotion/releases/tag/0.5.0-beta5) | [Beta installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg) |
+| Beta feed — opt-in | [0.5.0-beta6](https://github.com/rtho782/unmotion/releases/tag/0.5.0-beta6) | [Beta installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg) |
 
 Migration/cutover and clone dialogs open immediately while fresh checks run, with submission disabled until checks finish. Background refreshes preserve unchanged VM details, controls, focus and tooltips. Logs preserve your reading position when you scroll back and follow output while at the bottom. A pairing test shows progress until it completes.
 
@@ -76,7 +78,7 @@ The installer downloads a versioned TXZ package from GitHub Releases and Unraid 
 
 **0.4.9 uses protocol 7, unchanged from 0.4.2–0.4.8; existing pairings remain compatible.** New pairing requires 0.4.7 or later on both hosts. VMs using the supported OVMF firmware setting below need 0.4.9 or later on both hosts. When updating, pause scheduled replication, finish active jobs and shut down recovery-managed VMs before installing. Existing prepared copies can remain. Check pairing/native-hook readiness afterwards, then resume scheduling and use unMotion to start managed VMs.
 
-**Beta5 also uses protocol 7.** Live migration is an optional capability requiring matching Beta5 on both peers; older protocol-7 hosts retain existing unmanaged workflows. Ordinary transfers after live hand-back also require Beta5's guarded handover capability on both hosts. Finish/reconcile live jobs and shut down live-managed VMs before upgrading. A pending hand-back or unresolved handover blocks upgrades/removal, and native start fences must not be bypassed.
+**Beta6 also uses protocol 7.** Live migration is an optional capability requiring matching Beta6 on both peers; older protocol-7 hosts retain existing unmanaged workflows. Ordinary transfers after live hand-back also require the guarded handover capability on both hosts. Finish/reconcile live jobs and shut down live-managed VMs before upgrading. A pending hand-back or unresolved handover blocks upgrades/removal, and native start fences must not be bypassed.
 
 **From 0.4.1 or earlier**, transfers to protocol-7 peers are blocked; there is no unrestricted SSH fallback. Plan a coordinated update:
 
@@ -115,7 +117,7 @@ If destination startup fails, fix the reported problem and start it manually, th
 
 ### Live migration — beta only
 
-Use disposable guests first. Both hosts need matching Beta5, reciprocal pairing and verified native hooks. The current adapter is qualified for **libvirt 12.2.0** with matching QEMU/libvirt, an exact versioned Q35/i440fx machine and a same/newer CPU generation from the same vendor. Apply an appropriate shared custom CPU mode and fully stop/start the guest first; changing next-boot XML alone is insufficient. The single independent raw/qcow2 file must use a direct local pool path and disk cache `none` or `directsync`. Equivalent physical networks remain your responsibility.
+Use disposable guests first. Both hosts need matching Beta6, reciprocal pairing and verified native hooks. The current adapter is qualified for **libvirt 12.2.0** with matching QEMU/libvirt, an exact versioned Q35/i440fx machine and a same/newer CPU generation from the same vendor. Apply an appropriate shared custom CPU mode and fully stop/start the guest first; changing next-boot XML alone is insufficient. The single independent raw/qcow2 file must use a direct local pool path and disk cache `none` or `directsync`. Equivalent physical networks remain your responsibility.
 
 Intel nested hypervisors require KVM nesting enabled on both hosts and validation of the complete active CPU contract, including nested features. AMD SVM CPU configuration is supported, but SVM-enabled guests cannot migrate live in this beta because the kernel warns against migrating active nested AMD workloads. Use otherwise-supported Cold/Warm Move instead. unMotion does not change host module settings. Test the nested guests' own CPU requirements after deliberately reducing a parent VM's CPU feature set. See [kernel guidance](https://docs.kernel.org/virt/kvm/x86/running-nested-guests.html).
 
@@ -153,7 +155,15 @@ Start recovery-managed VMs through unMotion, not the native VM page or `virsh`: 
 
 **Automatic failover and recovery from an unreachable source are not available.** Neither are quorum/witness voting, alternate TPM-backup selection or failback transfer. Cold failback currently provides prerequisite checks only.
 
-A replication policy with stored replica state cannot currently be removed through the UI. **Replica removal deferred** means the removal workflow is unavailable, not queued deletion. Do not delete its records or replica storage manually.
+**Stable 0.4.9:** a policy with stored replicas cannot be removed through the UI. **Replica removal deferred** is an unavailable workflow, not queued deletion. Do not delete records or replica storage manually.
+
+### Ending replication (beta)
+
+With **0.5.0-beta6 on both hosts**, use **Disable** for a reversible pause, or **End replication** to permanently end a cycle. Review the affected data and choose **Keep replicas read-only** or **Delete replica data**. The ordinary source VM can keep running; its writable disks are never deleted. Kept copies remain inert inventory, not runnable recovery VMs, and can be removed later with **Delete retained replicas**.
+
+Partial receives are preserved unless you explicitly select **Also discard any partial receive**. An offline peer, unresolved recovery authority or foreign storage reference can leave retirement **BLOCKED** with scheduling stopped and data retained. Resolve the reason and choose **Retry retirement**; do not bypass it by deleting records or holds. Source bases are released only after paired destination acknowledgement. Warm Move removal follows the same acknowledgement-first ordering and retains logs.
+
+After ending completes, choose **Replicate** beside the VM to configure a **new cycle** for that destination. It starts a full copy with separate storage/identity, not reuse of old points or partial receives. Retained old cycles remain visible and independently removable; allow space for both copies. An unfinished retirement cannot be bypassed, and only one current cycle per VM/destination is permitted. Retained replicas or unfinished cleanup block uninstall so ownership records are not orphaned. See the [workflow and limits](https://github.com/rtho782/unmotion/blob/main/docs/REPLICATION.md#ending-replication-beta) and [Beta6 qualification](https://github.com/rtho782/unmotion/blob/main/docs/TESTING-RETIREMENT-BETA6.md).
 
 ## Other limitations
 
@@ -166,7 +176,7 @@ A replication policy with stored replica state cannot currently be removed throu
 
 ## Updates and support
 
-Use **Plugins → Check for Updates → Update**, following the coordinated upgrade steps above, then refresh unMotion. Community Apps and the stable feed offer 0.4.9; the beta feed offers 0.5.0-beta5. To opt into beta updates, paste `https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg` into **Plugins → Install Plugin**. Both hosts need matching Beta5 for live migration. Older protocol-7 peers retain existing unmanaged workflows but may lack optional CPU reports or live-migration support. Stable installations are not switched automatically. Keep the installed descriptor named **unmotion.plg** rather than creating another plugin entry. Manual installation and Community Apps use the same persistent installer; the verified current package is retained locally for boot-time restoration.
+Use **Plugins → Check for Updates → Update**, following the coordinated upgrade steps above, then refresh unMotion. Community Apps and the stable feed offer 0.4.9; the beta feed offers 0.5.0-beta6. To opt into beta updates, paste `https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg` into **Plugins → Install Plugin**. Both hosts need matching Beta6 for live migration. Older protocol-7 peers retain existing unmanaged workflows but may lack optional CPU reports or live-migration support. Stable installations are not switched automatically. Keep the installed descriptor named **unmotion.plg** rather than creating another plugin entry. Manual installation and Community Apps use the same persistent installer; the verified current package is retained locally for boot-time restoration.
 
 Choose **Report a problem** on a migration or clone job, including a failed or stuck job. It collects recent logs, relevant VM/storage metadata and available specifications for both hosts. Review and edit the anonymised preview, optionally retain original paths, then download or copy it. Redaction is best-effort: check filenames, paths and logs before sharing publicly.
 
