@@ -6,15 +6,17 @@ Clone a VM on your server, move it to another Unraid host, or keep scheduled ZFS
 
 [Plugin source](https://github.com/rtho782/unmotion) · [Releases](https://github.com/rtho782/unmotion/releases) · [Help and bug reports](https://github.com/rtho782/unmotion/issues)
 
-**Stable 0.5.0:** live migration with optional software TPM 2.0 and file/zvol disks, pooled capacity planning and disk/RAM progress, nested-aware CPU preparation/defaults, retained-copy cleanup and replication retirement/recreation are available through Community Apps and the stable feed. The opt-in beta feed offers **0.5.2-beta4**, described below. Live controls retain beta labels in the interface; software-TPM support remains experimental within the documented scope. Test disposable guests and keep verified backups.
+**Stable 0.5.0:** live migration with optional software TPM 2.0 and file/zvol disks, pooled capacity planning and disk/RAM progress, nested-aware CPU preparation/defaults, retained-copy cleanup and replication retirement/recreation are available through Community Apps and the stable feed. The opt-in beta feed offers **0.5.2-beta5**, described below. Live controls retain beta labels in the interface; software-TPM support remains experimental within the documented scope. Test disposable guests and keep verified backups.
 
 **Retained-copy cleanup:** reclaim proven inactive live-migration disks and state through an explicit review on the non-owning host. Both paired hosts must be reachable and running 0.5.0. Current-owner data, native start fences and job history remain; legacy artifacts without proven identities stay protected. See [cleanup instructions and limits](https://github.com/rtho782/unmotion/blob/main/docs/LIVE-CLEANUP-BETA9.md).
 
 ## Features
 
-### Opt-in beta: native live handover and SSH encryption
+### Opt-in beta: native live handover, SSH encryption and running-owner updates
 
-**0.5.2-beta4** uses native OpenSSH/libvirt live handover without a custom payload forwarder or an extra application-controlled pause. On **both matching beta hosts**, enable **Settings → unMotion → Native live migration trust**. Temporary system-libvirt/forwarding access is administrator-equivalent, not a per-VM sandbox: use it only between trusted administrators. Permanent pairing keys stay restricted. Persistent start fences, authenticated ownership reconciliation and retained source disks remain. Ambiguous interruptions can require operator review; neither a missing host nor a retained copy grants permission to start another VM.
+**0.5.2-beta5** uses native OpenSSH/libvirt live handover without a custom payload forwarder or an extra application-controlled pause. On **both matching beta hosts**, enable **Settings → unMotion → Native live migration trust**. Temporary system-libvirt/forwarding access is administrator-equivalent, not a per-VM sandbox: use it only between trusted administrators. Permanent pairing keys stay restricted. Persistent start fences, authenticated ownership reconciliation and retained source disks remain. Ambiguous interruptions can require operator review; neither a missing host nor a retained copy grants permission to start another VM.
+
+**Updating with a migrated VM running:** a settled live-migration owner may remain running when the target installer verifies identical native fencing code and its existing, exact QEMU admission. No VM shutdown, new ownership grant or process adoption is needed for that compatible update; retained old copies stay fenced. Finish/reconcile active work and pause replication first. Incompatible fencing changes, missing admission evidence, pending hand-back and active recovery-managed guests still block this exception. Read the specific refusal in the Plugins console rather than deleting ownership records. Linux file/zvol and Windows TPM/BitLocker running-owner upgrades passed on Unraid 7.3.4/7.4.0; see [upgrade behaviour and qualification](https://github.com/rtho782/unmotion/blob/main/docs/RUNNING-OWNER-UPGRADE-BETA5.md).
 
 Choose **Settings → SSH encryption** for AES-128-GCM (default) or AES-256-GCM on outgoing live, Cold/Warm Move and replication connections. This may improve encryption-limited throughput, but hardware, storage and changed data still determine speed; AES-256 is not always slower. Live jobs pin their selection, existing sessions are unchanged, and no silent cipher fallback or plaintext option is offered.
 
@@ -51,7 +53,7 @@ CPU application preserves existing VMX/SVM exposure, including implicit host-pas
 
 Requires Unraid **7.3.2 or later**, VM Manager enabled, sufficient storage and destination RAM, and SSH connectivity between hosts. Install matching unMotion versions on both hosts. Local cloning needs only one host and no pairing.
 
-Stable offers **0.5.0**, shown in Plugins as **2026.11.11.02-0.5.0**. Beta offers **0.5.2-beta4**, shown as **2026.11.13.03-0.5.2-beta4**. Fixed installer IDs are allocated during qualification, not derived from publication time. To opt in, install the beta installer below; subsequent Plugins-tab updates follow that channel. Existing stable installations do not switch automatically.
+Stable offers **0.5.0**, shown in Plugins as **2026.11.11.02-0.5.0**. Beta offers **0.5.2-beta5**, shown as **2026.11.14.01-0.5.2-beta5**. Fixed installer IDs are allocated during qualification, not derived from publication time. To opt in, install the beta installer below; subsequent Plugins-tab updates follow that channel. Existing stable installations do not switch automatically.
 
 Current release availability:
 
@@ -60,7 +62,7 @@ Current release availability:
 | Channel | Version | Installation |
 | --- | --- | --- |
 | Stable / Community Apps template | [0.5.0](https://github.com/rtho782/unmotion/releases/tag/0.5.0) | [Stable installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-stable/unmotion.plg) |
-| Beta feed — opt-in prerelease | [0.5.2-beta4](https://github.com/rtho782/unmotion/releases/tag/0.5.2-beta4) | [Beta installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg) |
+| Beta feed — opt-in prerelease | [0.5.2-beta5](https://github.com/rtho782/unmotion/releases/tag/0.5.2-beta5) | [Beta installer](https://raw.githubusercontent.com/rtho782/unmotion/plugin-beta/unmotion.plg) |
 
 Migration/cutover and clone dialogs open immediately while fresh checks run, with submission disabled until checks finish. Background refreshes preserve unchanged VM details, controls, focus and tooltips. Logs preserve your reading position when you scroll back and follow output while at the bottom. A pairing test shows progress until it completes.
 
@@ -92,9 +94,9 @@ The installer downloads a versioned TXZ package from GitHub Releases and Unraid 
 
 ### Upgrading from an older version
 
-**0.5.0 uses protocol 7, unchanged since 0.4.2; existing pairings remain compatible.** New pairing requires 0.4.7 or later on both hosts. The supported OVMF override still requires its optional capability on both peers. Before updating, pause replication, finish/reconcile active work and cleanup, and fully shut down recovery/live-managed VMs. Check pairing/native-hook readiness afterward before restarting managed guests or resuming schedules.
+**Protocol 7 is unchanged since 0.4.2; existing pairings remain compatible.** New pairing requires 0.4.7 or later on both hosts. The supported OVMF override still requires its optional capability on both peers. Before updating, pause replication and finish/reconcile active work and cleanup. Stable 0.5.0 requires recovery/live-managed VMs stopped; the beta5 target installer permits settled live owners to remain running when their existing admission and unchanged fencing code pass compatibility checks. Active recovery-managed guests still require shutdown. Check pairing/native-hook readiness afterward before restarting managed guests or resuming schedules.
 
-**Live migration needs exact matching application versions, live ABI capability 4 and native-data capability 1 on both peers.** Stable uses 0.5.0; the new native mode needs 0.5.2-beta4 plus native capability 1 and explicit trust on both hosts. Do not mix stable and beta for live moves. Otherwise-supported ordinary protocol-7 workflows retain their capability gates. Finish/reconcile live jobs and stop live-managed VMs before updating. Old queued guarded jobs must be resolved before creating a fresh native job; they are not converted silently. Pending hand-back or unresolved authority blocks upgrade/removal; do not bypass fences. Ordinary transfers after hand-back and encoded-zvol transfers retain their separate capability requirements.
+**Live migration needs exact matching application versions, live ABI capability 4 and native-data capability 1 on both peers.** Stable uses 0.5.0; the new native mode needs 0.5.2-beta5 plus native capability 1 and explicit trust on both hosts. Do not mix stable and beta for live moves. Otherwise-supported ordinary protocol-7 workflows retain their capability gates. Old queued guarded jobs must be resolved before creating a fresh native job; they are not converted silently. Pending hand-back or unresolved authority blocks upgrade/removal; do not bypass fences. Ordinary transfers after hand-back and encoded-zvol transfers retain their separate capability requirements.
 
 **From 0.4.1 or earlier**, transfers to protocol-7 peers are blocked; there is no unrestricted SSH fallback. Plan a coordinated update:
 
